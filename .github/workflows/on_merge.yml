@@ -2,7 +2,7 @@
 name: File_Presence_Check_on_Merge
 
 on:
-  merge:
+  push:
     branches: ["main"]
 
 jobs:
