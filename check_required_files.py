@@ -4,7 +4,8 @@ import sys
 owner = "MLindle"
 repo = "File_Presence_Check_Project"
 branch = "main"
-files_to_check = ["READE.md", ".gtignore"]
+files_to_check = ["README.md", ".gitignore"]
+missing_file_found = None
 
 for file_path in files_to_check:
 
@@ -22,3 +23,4 @@ if missing_file_found == True:
     sys.exit(1)
 
 #Adding comment for test
+#New comment for testing
