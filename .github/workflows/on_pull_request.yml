@@ -6,9 +6,50 @@ on:
 
 jobs:
     file_validation_job:
-        name: File Validation Job
+        name: File Validation and CloudWatch Logging
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v5
+
+# Run the file presence checker
+
             - name: Run_file_presence_checker
               run: python check_required_files.py
+
+# Configure AWS credentials
+
+            - name: AWS Credentials
+              uses: aws-actions/configure-aws-credentials@V4
+              with:
+                aws-access-key-id:      ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key:  ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+                aws-region:             ${{ secrets.AWS_REGION }}
+
+# Check if log group exists, create if it doesn't. Output will be sent to dev/null if resource already exists.
+
+            - name: Check or create log group
+              run:  aws logs create-log-group --log-group-name "${{ secrets.LOG_GROUP_NAME_BETA }}" 2>/dev/null || true
+
+# Assign a name to this log stream using UTC timestamp
+
+            - name: Create log stream name
+              run: echo "LogStream$(date -u + '%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+
+# Create the stream and push log values
+
+            - name: Create stream and push logs
+              run: |
+                aws logs create-log-stream \
+                --log-group-name "${{ secrets.LOG_GROUP_NAME_BETA }}" \
+                --log-stream-name "$LogStream" || true
+                
+                 # CloudWatch event timestampe in ms
+                
+                TS=$(($(date -u +%s)*1000))
+
+                # Populate stream with logs
+
+                aws logs put-log-events \
+                    --log-group-name "${{ secrets.LOG_GROUP_NAME_BETA }}" \
+                    --log-stream-name "$LogStream" \
+                    --log-events "[{\"timestamp\":$TS,\"message\":\"Workflow=$GITHUB_WORKFLOW SHA=$GITHUB_SHA Actor=$GITHUB_ACTOR RunID=$GITHUB_RUN_ID Job=$GITHUB_JOB Repo=$GITHUB_REPOSITORY\"}]"
