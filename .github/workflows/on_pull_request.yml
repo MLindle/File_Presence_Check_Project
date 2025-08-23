@@ -1,0 +1,14 @@
+name: File_Presence_Check_on_PR
+
+on:
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    file_validation_job:
+        name: File Validation Job
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v5
+            - name: Run_file_presence_checker
+              run: check_required_files.py
