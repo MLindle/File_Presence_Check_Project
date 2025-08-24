@@ -16,7 +16,7 @@ def main():
     output_files = []
 
     try:
-        with open(".required-files.yml", mode="r") as required_files:
+        with open(".required-file.yml", mode="r") as required_files:
             for line in required_files:
                     line = " ".join(line.split())
                     if not line:
@@ -67,7 +67,6 @@ def main():
             print(f"required_files_output={json.dumps(output_files)}", file=out)
             print(f"missing_files_output={json.dumps(missing_files)}", file=out)
 
-    print (missing_file_found_default, missing_file_found_custom)
     sys.exit(1 if (missing_file_found_default or missing_file_found_custom) else 0)
 
 if __name__ == "__main__":
