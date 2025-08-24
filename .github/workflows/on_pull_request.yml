@@ -48,8 +48,8 @@ jobs:
                 TS=$(($(date -u +%s)*1000))
 
                 # Turn arrays into plain text (safe for embedding in message string)
-                MISSING='${{ join(fromJSON(steps.file_check.outputs.missing_files_output), ' \| ') }}'
-                REQUIRED='${{ join(fromJSON(steps.file_check.outputs.required_files_output), ' \| ') }}'
+                MISSING='${{ join(fromJSON(steps.file_check.outputs.missing_files_output), ' , ') }}'
+                REQUIRED='${{ join(fromJSON(steps.file_check.outputs.required_files_output), ' , ') }}'
 
                 aws logs put-log-events \
                   --log-group-name "${{ secrets.LOG_GROUP_NAME_BETA }}" \
