@@ -38,16 +38,18 @@ jobs:
       - name: Create stream and push logs
         run: |
           aws logs create-log-stream \
-          --log-group-name "${{ secrets.LOG_GROUP_NAME_PROD }}" \
-          --log-stream-name "$STREAM_NAME" || true
-                
-          # CloudWatch event timestampe in ms
-                
+            --log-group-name "${{ secrets.LOG_GROUP_NAME_PROD }}" \
+            --log-stream-name "$STREAM_NAME" || true
+
+          # CloudWatch event timestamp in ms
           TS=$(($(date -u +%s)*1000))
 
-          # Populate stream with logs
+          # Turn arrays into plain text
+          MISSING='${{ join(fromJSON(steps.file_check.outputs.missing_files_output), ' , ') }}'
+          REQUIRED='${{ join(fromJSON(steps.file_check.outputs.required_files_output), ' , ') }}'
 
           aws logs put-log-events \
-              --log-group-name "${{ secrets.LOG_GROUP_NAME_PROD }}" \
-              --log-stream-name "$STREAM_NAME" \
-              --log-events "[{\"timestamp\":$TS,\"message\":\"Workflow=$GITHUB_WORKFLOW SHA=$GITHUB_SHA Actor=$GITHUB_ACTOR RunID=$GITHUB_RUN_ID Job=$GITHUB_JOB Repo=$GITHUB_REPOSITORY\"}]"
+            --log-group-name "${{ secrets.LOG_GROUP_NAME_PROD }}" \
+            --log-stream-name "$STREAM_NAME" \
+            --log-events '[{"timestamp": '"$TS"', "message": "Workflow='"$GITHUB_WORKFLOW"' SHA='"$GITHUB_SHA"' Actor='"$GITHUB_ACTOR"' RunID='"$GITHUB_RUN_ID"' Job='"$GITHUB_JOB"' Repo='"$GITHUB_REPOSITORY"' Branch='"$GITHUB_REF_NAME"' Event='"$GITHUB_EVENT_NAME"' Missing_Files='"$MISSING"' Files_Found='"$REQUIRED"'"}]'
+
