@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: run_file_presence_on_merge
+        id: file_check
         run: python check_required_files.py
 
 # Configure AWS credentials
