@@ -53,4 +53,4 @@ jobs:
                 aws logs put-log-events \
                     --log-group-name "${{ secrets.LOG_GROUP_NAME_BETA }}" \
                     --log-stream-name "$STREAM_NAME" \
-                    --log-events '[{"timestamp": '"$TS"', "message": "Workflow=$GITHUB_WORKFLOW SHA=$GITHUB_SHA Actor=$GITHUB_ACTOR RunID=$GITHUB_RUN_ID Job=$GITHUB_JOB Repo=$GITHUB_REPOSITORY Branch=$GITHUB_REF_NAME Event=$GITHUB_EVENT_NAME Missing_Files=${{ steps.file_check.outputs.missing_files_output}} | Required_Files=${{steps.file_check.outputs.required_files_output}}"}]'
+                    --log-events '[{"timestamp": '"$TS"', "message": "Workflow=$GITHUB_WORKFLOW SHA=$GITHUB_SHA Actor=$GITHUB_ACTOR RunID=$GITHUB_RUN_ID Job=$GITHUB_JOB Repo=$GITHUB_REPOSITORY Branch=$GITHUB_REF_NAME Event=$GITHUB_EVENT_NAME Missing_Files=\"${{ steps.file_check.outputs.missing_files_output}}\" Required_Files=\"${{steps.file_check.outputs.required_files_output}}\""}]'
