@@ -33,7 +33,7 @@ jobs:
 # Assign a name to this log stream using UTC timestamp
 
             - name: Create log stream name
-              run: echo "$STREAM_NAME=$(date -u + '%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
+              run: echo "$STREAM_NAME=$(date -u +%Y%m%dT%H%M%SZ)" >> "$GITHUB_ENV"
 
 # Create the stream and push log values
 
