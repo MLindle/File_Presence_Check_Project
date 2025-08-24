@@ -16,7 +16,7 @@ def main():
     output_files = []
 
     try:
-        with open(".required-file.yml", mode="r") as required_files:
+        with open(".required-files.yml", mode="r") as required_files:
             for line in required_files:
                     line = " ".join(line.split())
                     if not line:
